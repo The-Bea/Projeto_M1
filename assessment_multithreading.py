@@ -23,7 +23,7 @@ MAX_THREADS = 10
 
 def extract_movie_details(movie_url):
     try:
-        
+        # sessão para parecer humano
         session = requests.Session()
         response = session.get(movie_url, headers=HEADERS, timeout=10)
         
@@ -32,15 +32,15 @@ def extract_movie_details(movie_url):
         
         soup = BeautifulSoup(response.text, "html.parser")
         
-        
+        # Acha o título principal
         title_tag = soup.find("h1")
         title = title_tag.get_text(strip=True) if title_tag else "Título Indisponível"
         
-        
+        # Acha a avaliação
         rating_tag = soup.find("span", {"class": "sc-bde20123-1"})
         rating = rating_tag.get_text(strip=True) if rating_tag else "8.5"  
         
-        
+        # Acha o Resumo/Sinopse
         summary_tag = soup.find("span", {"data-testid": "plot-xl"})
         if not summary_tag:
             summary_tag = soup.find("span", {"data-testid": "plot-l"})
@@ -88,6 +88,7 @@ def main():
     
     movie_urls = get_popular_movies_urls()
     
+    # Se O IMDB bloquear completamente, gera uma lista simulada.
     if not movie_urls:
         print("\n[Aviso] Usando modo de simulação local devido às restrições de Firewall do IMDB.")
         movie_urls = [f"https://www.imdb.com/title/tt{i:07d}/" for i in range(1, 31)]
